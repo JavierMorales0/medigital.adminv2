@@ -2,7 +2,7 @@ import {THEMES} from '@/config'
 import {ToggleButton} from 'primereact/togglebutton';
 import {useUIState} from "@/hooks/UIState.js";
 
-const ToogleThemeButton = () => {
+const ToogleThemeButton = ({hideLabel = false, styleProp = null}) => {
     const ui = useUIState()
 
     const handleChange = () => {
@@ -12,11 +12,11 @@ const ToogleThemeButton = () => {
         <ToggleButton
             checked={ui.appTheme === THEMES.DARK}
             onChange={handleChange}
+            onLabel={hideLabel ? '' : 'Oscuro'}
+            offLabel={hideLabel ? '' : 'Claro'}
             onIcon="pi pi-moon"
             offIcon="pi pi-sun"
-            onLabel="Oscuro"
-            offLabel="Claro"
-            style={style.button}
+            style={styleProp ?? style.button}
         />
     )
 }

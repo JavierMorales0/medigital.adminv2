@@ -7,6 +7,7 @@ export default function ToolsService() {
     const {data, isLoading, isError, isFetching, refetch} = useQuery({
         queryKey: ['tools'],
         queryFn: _getTools,
+        refetchOnWindowFocus: false,
     })
 
     return {

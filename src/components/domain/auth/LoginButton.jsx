@@ -1,12 +1,15 @@
 import {Button} from "primereact/button";
-import AuthService from "@/services/AuthService.js";
 
-const LoginButton = () => {
-    const {login} = AuthService();
-    const handleClick = () => {
-        login.mutate({username: "javier.morales", password: "javier123"});
-    }
-    return (<Button icon="pi pi-sign-in" rounded aria-label="Iniciar sesi&oacute;n" onClick={handleClick}/>)
+const LoginButton = ({hideLabel = false, fullWidth = false, rounded = false}) => {
+
+    return (<Button icon="pi pi-sign-in" aria-label="Iniciar sesion"
+                    rounded={rounded}
+                    iconPos='right'
+                    form='auth-form'
+                    type='submit'
+                    label={!hideLabel && "Iniciar sesion"}
+                    style={{width: fullWidth && '100%'}}
+                    />)
 }
 
 export default LoginButton

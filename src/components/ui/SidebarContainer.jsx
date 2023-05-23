@@ -1,4 +1,4 @@
-import LoginButton from "@/components/domain/auth/LoginButton.jsx";
+import LogoutButton from "@/components/domain/auth/LogoutButton.jsx";
 import ToolsMenu from "@/components/ui/ToolsMenu.jsx";
 
 const SidebarContainer = () => {
@@ -8,9 +8,11 @@ const SidebarContainer = () => {
                 <span>MEDIGITAL</span>
                 <span style={style.profile.primaryText}>.admin</span>
             </div>
-            <ToolsMenu/>
+            <div style={style.tools}>
+                <ToolsMenu/>
+            </div>
             <div style={style.actions}>
-                <LoginButton/>
+                <LogoutButton/>
             </div>
         </div>
     )
@@ -19,7 +21,7 @@ const SidebarContainer = () => {
 const style = {
     container: {
         width: '250px',
-        height: '100vh',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -30,7 +32,7 @@ const style = {
     },
     profile: {
         fontSize: '24px',
-        dioplay: 'flex',
+        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

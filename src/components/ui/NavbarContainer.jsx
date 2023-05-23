@@ -23,7 +23,7 @@ const NavbarContainer = () => {
             <Button icon="pi pi-plus" aria-label="agregar consulta"/>
         </div>
         <div>
-            <ToogleThemeButton/>
+            <ToogleThemeButton hideLabel styleProp={style.themeButton}/>
         </div>
     </nav>)
 }
@@ -47,6 +47,8 @@ const style = {
     searchInput: {
         flex: 1,
         marginRight: '16px'
+    }, themeButton: {
+        borderRadius: '100%',
     }
 }
 
