@@ -10,4 +10,11 @@ html, body {
     min-height: 100%;
 }
 
-.p-password, .p-password-input{ width: 100% !important; }
+.p-password, .p-password-input, .p-autocomplete-input{ width: 100% !important; }
+
+.p-autocomplete-input { background-color: transparent; }
+
+.active-menu > a > span { color: var(--primary-color) !important; }
+.active-menu { outline: none !important; }
+.p-fileupload-content{ border: none !important; padding: 0 !important; }
+.p-dialog .p-dialog-content { padding: 0 !important; }

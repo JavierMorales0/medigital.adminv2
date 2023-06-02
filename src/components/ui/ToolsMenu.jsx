@@ -1,25 +1,15 @@
-import ToolsService from "@/services/ToolsService.js";
 import {SlideMenu} from "primereact/slidemenu"
+import {useUIState} from "@/hooks/UIState.js";
 
 const ToolsMenu = () => {
-    const tools = ToolsService();
-    if (tools?.isLoading) {
-        return (
-            <div>Cargando...</div>
-        )
-    }
-    if (tools?.error) {
-        return (
-            <div>asdads</div>
-        )
-    }
+    const ui = useUIState()
 
     return (
         <SlideMenu
-            model={tools?.data}
+            model={ui?.menu}
             backLabel={'Volver'}
             backIcon={'pi pi-angle-left'}
-            viewportHeight={250}
+            viewportHeight={300}
             style={{border: 'none', backgroundColor: 'transparent'}}
         />
     )

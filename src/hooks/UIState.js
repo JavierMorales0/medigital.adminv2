@@ -1,15 +1,33 @@
 import {hookstate, useHookstate} from "@hookstate/core";
 import {DEFAULT_THEME, THEMES} from "@/config/index.js";
 import PrimeReact from "primereact/api";
-import {useEffect} from "react";
+import {useEffect, useMemo} from "react";
 import {getAppTheme, saveAppTheme} from "@/utils/LocalStorageUtils.js";
+import {useLocation} from "react-router-dom";
 
-const initialState = hookstate({
+export const uiState = hookstate({
     theme: "",
+    menu: [],
+    activeMenu: "",
+    loading: 0,
+    isVisibleChangeProfilePictureDialog: false,
 });
 
+export const startLoading = () => {
+    uiState.loading.set(uiState.loading.value + 1)
+}
+
+export const endLoading = () => {
+    uiState.loading.set(uiState.loading.value > 0 ? uiState.loading.value - 1 : 0)
+}
+
 export const useUIState = () => {
-    const state = useHookstate(initialState);
+    const state = useHookstate(uiState);
+    const {pathname} = useLocation();
+
+    useEffect(() => {
+        state.activeMenu.set(pathname);
+    }, [pathname])
 
     useEffect(() => {
         //* Si no es la primera vez que se carga la página, no se hace nada
@@ -34,6 +52,18 @@ export const useUIState = () => {
         PrimeReact.changeTheme(current, actual, 'theme-link');
     }
 
+
+    const completeMenu = useMemo(() => {
+        const _menu = state.get({noproxy: true}).menu;
+        if (_menu?.length === 0) return [];
+        return _menu?.reduce((acc, item) => {
+            if (item.path !== state.activeMenu.value) return [...acc, {...item, className: ''}]
+            item.className = 'active-menu';
+            return [...acc, item]
+        }, [])
+    }, [state?.menu?.value?.length, state?.activeMenu?.value])
+
+
     return {
         appTheme: state.theme.value,
         toogleTheme: () => {
@@ -42,6 +72,17 @@ export const useUIState = () => {
             handleChangeTheme(currentTheme, newTheme)
             state.theme.set(newTheme);
             saveAppTheme(newTheme);
-        }
+        },
+        setMenu: (menu) => {
+            state.menu.set(menu)
+        },
+        menu: completeMenu,
+        simpleMenu: state.get({noproxy: true}).menu,
+        activeMenu: state.get({noproxy: true}).activeMenu,
+        isLoadingForeground: state.loading.value > 0,
+        addLoadingForeground: () => { state.loading.set(state.loading.value + 1) },
+        removeLoadingForeground: () => { state.loading.set(state.loading.value - 1) },
+        isVisibleChangeProfilePictureDialog: state.isVisibleChangeProfilePictureDialog.value,
+        toogleChangeProfilePictureDialog: (value) => { state.isVisibleChangeProfilePictureDialog.set(value) }
     };
 };

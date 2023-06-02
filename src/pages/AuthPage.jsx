@@ -7,9 +7,11 @@ import {Password} from 'primereact/password';
 import {Checkbox} from "primereact/checkbox";
 import {useHookstate} from "@hookstate/core";
 import TextAction from "@/components/ui/TextAction.jsx";
-import {useRef} from "react";
+import {useEffect, useRef} from "react";
 import P12Regular from "@/components/ui/P12Regular.jsx";
-import {ProgressSpinner} from "primereact/progressspinner";
+import P16Regular from "@/components/ui/P16Regular.jsx";
+import P14Regular from "@/components/ui/P14Regular.jsx";
+import Page from "@/pages/Page.jsx";
 
 const AuthPage = () => {
     const usernameRef = useRef(null)
@@ -19,6 +21,10 @@ const AuthPage = () => {
 
     const rememberMe = useHookstate(false)
 
+    useEffect(() => {
+        usernameRef.current.focus()
+    }, [])
+
     const handleForgotPassword = () => {
         console.log('forgot password')
     }
@@ -26,7 +32,9 @@ const AuthPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         const formData = {
-            username: usernameRef.current.value, password: passwordRef.current.getInput().value, rememberMe: rememberMe.value
+            username: usernameRef.current.value,
+            password: passwordRef.current.getInput().value,
+            rememberMe: rememberMe.value
         }
         login.mutate(formData);
     }
@@ -35,12 +43,10 @@ const AuthPage = () => {
         console.log('create user')
     }
 
-    return (<>
+    return (<Page title='Autenticación'>
             <ToogleThemeButton hideLabel styleProp={style.button}/>
             <div style={style.container}>
-                {
-                    login.error && console.log(login.error.response.data.msg)
-                }
+                {login.error && console.log(login.error.response.data.msg)}
                 <form style={style.subcontainer} onSubmit={handleSubmit} id='auth-form'>
                     <P16Bold color={'--highlight-text-color'}>
                         moME
@@ -91,11 +97,38 @@ const AuthPage = () => {
                                     action={handleCreateUser}/>
                     </P12Regular>
                 </form>
-                <div>
-
+                <div style={{
+                    ...style.subcontainer,
+                    maxWidth: '30vw',
+                    alignItems: 'flex-start',
+                    backgroundColor: 'var(--highlight-bg)',
+                    padding: '16px 32px',
+                    borderRadius: '16px'
+                }}>
+                    <h3>
+                        Acerca de MEDIGITAL.admin
+                    </h3>
+                    <P16Regular>
+                        Somos una plataforma de gestión de pacientes, que te permite tener un control de tus pacientes
+                        de manera fácil y rápida. Utilizamos tecnología de punta para que puedas gestionar tus
+                        actividades diarias de manera eficiente.
+                    </P16Regular>
+                    <div style={style.details}>
+                        <h3 style={{margin: 0}}>Características</h3>
+                        <ul>
+                            <li style={style.list}><P14Regular>Control de pacientes</P14Regular></li>
+                            <li style={style.list}><P14Regular>Control de consultas</P14Regular></li>
+                            <li style={style.list}><P14Regular>Control de doctores</P14Regular></li>
+                            <li style={style.list}><P14Regular>Control de citas</P14Regular></li>
+                            <li style={style.list}><P14Regular>Control de historias clínicas</P14Regular></li>
+                            <li style={style.list}><P14Regular>Control de recetas</P14Regular></li>
+                            <li style={style.list}><P14Regular>Control de pagos</P14Regular></li>
+                            <li style={style.list}><P14Regular>Control de reportes</P14Regular></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </>
+        </Page>
 
     )
 }
@@ -115,7 +148,7 @@ const style = {
         gap: '16px',
         alignItems: 'center',
         justifyContent: 'center',
-        minWidth: '350px'
+        minWidth: '25vw'
     }, button: {
         borderRadius: '100%', position: 'absolute', top: '16px', right: '16px'
     }, inputContainer: {
@@ -126,7 +159,9 @@ const style = {
         fontSize: '12px', marginLeft: '8px'
     }, rememberMeContainer: {
         display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    }
+    }, list: {
+        margin: 0, padding: 0
+    }, details: {display: 'flex', flexDirection: 'column', width: '100%'}
 }
 
 export default AuthPage;

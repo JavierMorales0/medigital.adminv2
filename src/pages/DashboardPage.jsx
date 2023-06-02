@@ -1,8 +1,10 @@
+import Page from "@/pages/Page.jsx";
+
 const DashboardPage = () => {
     return (
-        <div>
+        <Page title='Dashboard'>
             <h1>Dashboard</h1>
-        </div>
+        </Page>
     )
 }
 

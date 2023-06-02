@@ -8,7 +8,15 @@ const LogoutButton = ( )=> {
         logout();
     }
 
-    return (<Button icon="pi pi-sign-in" rounded severity="danger" aria-label="Iniciar sesi&oacute;n" onClick={handleClick}/>)
+    return (<Button
+                icon="pi pi-sign-in"
+                rounded
+                severity="secondary"
+                aria-label="Iniciar sesi&oacute;n"
+                onClick={handleClick}
+                label='Cerrar sesi&oacute;n'
+                iconPos="right"
+    />)
 }
 
 export default LogoutButton
