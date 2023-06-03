@@ -4,6 +4,10 @@ import P14Regular from "@/components/ui/P14Regular.jsx";
 import P12Light from "@/components/ui/P12Light.jsx";
 import StatusAppointmentComponent from "@/components/domain/calendar/StatusAppointmentComponent.jsx";
 import {Divider} from "primereact/divider";
+import {Button} from "primereact/button";
+import {formatDistanceToNow} from "date-fns";
+import AppointmentCardHeader from "@/components/domain/calendar/AppointmentCardHeader.jsx";
+import AppointmentCardBody from "@/components/domain/calendar/AppointmentCardBody.jsx";
 
 const AppointmentsList = ({appointments}) => {
     return (
@@ -11,22 +15,12 @@ const AppointmentsList = ({appointments}) => {
             {
                 appointments?.map((appointment, index) => (
                     <div key={index} style={dynamicStyles(index)?.card}>
-                        <img src={appointment?.booked_by?.avatar} alt="avatar" style={style.cardAvatar}/>
+                        <img src={appointment?.booked_by?.avatar} alt="avatar" style={style.cardAvatar}
+                             referrerPolicy='no-referrer'/>
                         <div style={style.cardContent}>
-                            <div style={style.cardHeader}>
-                                <P16Bold sx={style.cardHeaderText}>{appointment?.name} <StatusAppointmentComponent status={appointment?.status}/></P16Bold>
-                                <P12Regular
-                                    sx={style.cardHeaderText}>{appointment?.hour} - {appointment?.booked_by.email}</P12Regular>
-                            </div>
+                            <AppointmentCardHeader appointment={appointment} style={style}/>
                             <Divider style={style.divider}/>
-                            <div style={style.cardBody}>
-                                <P14Regular>
-                                    {appointment?.reason}
-                                </P14Regular>
-                                <P12Light>
-                                    {appointment?.observations}
-                                </P12Light>
-                            </div>
+                            <AppointmentCardBody appointment={appointment} style={style}/>
                         </div>
                     </div>
                 ))
@@ -34,9 +28,9 @@ const AppointmentsList = ({appointments}) => {
         </div>
     )
 }
-const dynamicStyles = (index) =>{
-    return{
-        card:{
+const dynamicStyles = (index) => {
+    return {
+        card: {
             padding: '16px',
             borderRadius: '16px',
             backgroundColor: index % 2 === 0 && 'var(--highlight-bg)',
@@ -62,7 +56,7 @@ const style = {
         textAlign: 'center',
     },
     cardAvatar: {
-        width: '20%',
+        width: '50px',
         borderRadius: '50%',
     },
     cardHeader: {
@@ -75,10 +69,16 @@ const style = {
         padding: '8px',
         position: 'relative'
     },
-    cardHeaderText: {textAlign: 'left', margin: 0, padding: 0, maxWidth: '80%', overflow: 'hidden'},
+    cardHeaderText: {textAlign: 'left', margin: 0, padding: 0, maxWidth: '80%', overflow: 'hidden', wordBreak: 'break-word'},
     divider: {padding: 0, margin: 0},
     cardBody: {
         width: '100%',
+    },
+    actions: {
+        paddingTop: '8px',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '16px'
     }
 }
 

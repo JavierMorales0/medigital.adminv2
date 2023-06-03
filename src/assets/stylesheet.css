@@ -18,3 +18,5 @@ html, body {
 .active-menu { outline: none !important; }
 .p-fileupload-content{ border: none !important; padding: 0 !important; }
 .p-dialog .p-dialog-content { padding: 0 !important; }
+a{ text-decoration: none !important; color: var(--highlight-text-color) !important; }
+.first-letter-uppercase:first-letter { text-transform: uppercase; }

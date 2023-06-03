@@ -5,10 +5,10 @@ import P10SemiBold from "@/components/ui/P10SemiBold.jsx";
 const StatusAppointmentComponent = ({status}) => {
     const style = {
         content: {
-            backgroundColor: status === APPOINTMENT_STATUS.PENDING ? 'var(--green-200)' :
-                status === APPOINTMENT_STATUS.CANCELLED ? 'var(--red-200)' :
-                    status === APPOINTMENT_STATUS.COMPLETED ? 'var(--blue-200)' :
-                        status === APPOINTMENT_STATUS.IN_PROGRESS ? 'var(--yellow-200)' : 'var(--green-200)',
+            backgroundColor: APPOINTMENT_STATUS[status] === APPOINTMENT_STATUS.PENDING ? 'var(--green-200)' :
+                APPOINTMENT_STATUS[status] === APPOINTMENT_STATUS.CANCELED ? 'var(--red-200)' :
+                    APPOINTMENT_STATUS[status] === APPOINTMENT_STATUS.FINISHED ? 'var(--blue-200)' :
+                        APPOINTMENT_STATUS[status] === APPOINTMENT_STATUS.IN_PROGRESS ? 'var(--yellow-200)' : 'var(--green-200)',
             padding: '4px 8px',
             position: 'absolute',
             top: '0',
