@@ -22,7 +22,7 @@ const StatusAppointmentComponent = ({status}) => {
     }
     const content = (
         <>
-            <P10SemiBold sx={style.text}>{APPOINTMENT_STATUS[status]}</P10SemiBold>
+            <P10SemiBold sx={style.text} color='--gray-900'>{APPOINTMENT_STATUS[status]}</P10SemiBold>
         </>
     )
     return (

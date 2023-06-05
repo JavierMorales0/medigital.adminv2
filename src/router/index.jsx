@@ -42,6 +42,12 @@ const ConsultsPage = () => (
     </DynamicImport>
 )
 
+const WaitingRoomPage = () => (
+    <DynamicImport load={() => import('@/pages/WaitingRoomPage')}>
+        {(Component) => Component === null ? <p>Loading</p> : <Component/>}
+    </DynamicImport>
+)
+
 const ProtectedAuthRoute = ({redirectPath = "/login", children }) => {
     const token = getToken() || null;
     if(!token) return <Navigate to={redirectPath} replace/>
@@ -58,10 +64,13 @@ const RoutesApp = () => {
                        element={<ProtectedAuthRoute><DashboardPage/></ProtectedAuthRoute>}
                 />
                 <Route path="calendario"
-                          element={<ProtectedAuthRoute><CalendarPage/></ProtectedAuthRoute>}
+                       element={<ProtectedAuthRoute><CalendarPage/></ProtectedAuthRoute>}
                 />
                 <Route path="consultas"
-                          element={<ProtectedAuthRoute><ConsultsPage/></ProtectedAuthRoute>}
+                       element={<ProtectedAuthRoute><ConsultsPage/></ProtectedAuthRoute>}
+                />
+                <Route path="sala-de-espera"
+                       element={<ProtectedAuthRoute><WaitingRoomPage/></ProtectedAuthRoute>}
                 />
             </Route>
         </Routes>
