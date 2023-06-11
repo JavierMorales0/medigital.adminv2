@@ -34,6 +34,7 @@ API.interceptors.response.use(
         configData(HTTP_TYPES.RESPONSE, response?.config)
         return response;
     }, function (error) {
+        configData(HTTP_TYPES.RESPONSE, error?.config)
         if (error.response.status === 401) {
             removeToken();
             document.location.href = '/login';

@@ -6,6 +6,19 @@ html, body {
     height: 100%;
 }
 
+::-webkit-scrollbar-track {
+    background-color: var(--surface-overlay);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    background-color: var(--surface-overlay);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--surface-border);
+}
+
 #root{
     min-height: 100%;
 }
@@ -18,5 +31,16 @@ html, body {
 .active-menu { outline: none !important; }
 .p-fileupload-content{ border: none !important; padding: 0 !important; }
 .p-dialog .p-dialog-content { padding: 0 !important; }
-a{ text-decoration: none !important; color: var(--highlight-text-color) !important; }
+.active-menu a{ text-decoration: none !important; color: var(--highlight-text-color) !important; }
 .first-letter-uppercase:first-letter { text-transform: uppercase; }
+
+.rs__cell{background-color: var(--surface-overlay) !important;}
+.css-vkc4v8-MuiTypography-root{color: var(--highlight-text-color) !important;}
+.MuiButtonBase-root, .css-s22wio, .MuiTypography-root{color: var(--text-color) !important;}
+
+.p-dialog-header{padding: 8px 16px !important; border-bottom: 1px solid var(--surface-border) !important;}
+.p-dialog-header-icons{align-self: center !important;}
+.p-tabview-title{font-size: 12px !important; font-weight: 600;}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus{outline: none !important; box-shadow: none !important;}
+.p-tooltip .p-tooltip-text{font-size: 12px !important; font-weight: 600 !important;}
+.p-card-content{padding: 0 !important;}

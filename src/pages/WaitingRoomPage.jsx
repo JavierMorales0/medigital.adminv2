@@ -1,12 +1,10 @@
 import Page from "@/pages/Page.jsx";
-import {useTemporalConsultState} from "@/hooks/TemporalConsultState.js";
-import WaitingRoomContainer from "@/components/domain/waitingRoom/WaitingRoomContainer.jsx";
+import {Outlet} from "react-router-dom";
 
 const WaitingRoomPage = () => {
-    const temporalConsult = useTemporalConsultState()
     return (
         <Page title='Sala de espera'>
-            <WaitingRoomContainer isOneItemSelected={!temporalConsult?.isEmpty()}/>
+            <Outlet/>
         </Page>
     )
 }

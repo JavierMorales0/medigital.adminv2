@@ -1,7 +1,8 @@
 import {hookstate, useHookstate} from "@hookstate/core";
+import { format} from "date-fns";
 
 export const temporalConsultState = hookstate({
-    date: new Date(),
+    date: null,
     startHour: null,
     endHour: null,
     patientId: null,
@@ -22,6 +23,7 @@ export const useTemporalConsultState = () => {
 
     return {
         date: state.date.value,
+        setDate: (date) => state.date.set(date),
         startHour: state.startHour.value,
         setStartHour: (hour) => state.startHour.set(hour),
         endHour: state.endHour.value,
@@ -50,8 +52,11 @@ export const useTemporalConsultState = () => {
         setPrevAppointment: (prevAppointment) => state.prevAppointment.set(prevAppointment),
         status: state.status.value,
         setStatus: (status) => state.status.set(status),
+        init: ()=>{
+            state.date.set(format(new Date(), 'yyyy-MM-dd'));
+        },
         clear: () => {
-            state.date.set(new Date());
+            state.date.set(null);
             state.startHour.set(null);
             state.endHour.set(null);
             state.patientId.set(null);
@@ -67,12 +72,10 @@ export const useTemporalConsultState = () => {
             state.status.set(null);
         },
         isEmpty: () => {
-            return !state.startHour.value && !state.endHour.value && !state.patientId.value && !state.patientName.value
-                    && !state.doctor.value && !state.reason.value && !state.physicalFindings.value
-                    && !state.medicalRecord.value && !state.diagnostic.value.length && !state.prescriptions.value.length
-                    && !state.observations.value && !state.prevAppointment.value && !state.status.value;
+            return Object.values(state.get()).every((value) => value === null || value === '' || value.length === 0);
         },
         fillDataWithPrevAppointment: ({_id, name, reason, observations}) => {
+            state.date.set(format(new Date(), 'yyyy-MM-dd'));
             state.prevAppointment.set(_id);
             state.patientName.set(name);
             state.reason.set(reason);

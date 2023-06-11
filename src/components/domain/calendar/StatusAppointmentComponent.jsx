@@ -10,14 +10,11 @@ const StatusAppointmentComponent = ({status}) => {
                     APPOINTMENT_STATUS[status] === APPOINTMENT_STATUS.FINISHED ? 'var(--blue-200)' :
                         APPOINTMENT_STATUS[status] === APPOINTMENT_STATUS.IN_PROGRESS ? 'var(--yellow-200)' : 'var(--green-200)',
             padding: '4px 8px',
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            zIndex: '1',
         },
         text: {
             padding: 0,
             margin: 0,
+            textTransform: 'lowercase'
         }
     }
     const content = (

@@ -20,7 +20,9 @@ const SidebarContainer = () => {
 
 const style = {
     container: {
+        maxWidth: '250px',
         width: '250px',
+        minWidth: '250px',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',

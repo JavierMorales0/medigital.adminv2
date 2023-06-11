@@ -57,7 +57,7 @@ export const useUIState = () => {
         const _menu = state.get({noproxy: true}).menu;
         if (_menu?.length === 0) return [];
         return _menu?.reduce((acc, item) => {
-            if (item.path !== state.activeMenu.value) return [...acc, {...item, className: ''}]
+            if (!state.activeMenu.value?.startsWith(item.path) || !item.path) return [...acc, {...item, className: ''}]
             item.className = 'active-menu';
             return [...acc, item]
         }, [])

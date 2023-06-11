@@ -15,9 +15,20 @@ export const THEMES = {
 export const CRYPTO_SECRET_KEY = 'medigital.admin';
 
 export const APPOINTMENT_STATUS = {
-    PENDING: 'PENDIENTE',
-    WAITING: 'ESPERANDO',
-    IN_PROGRESS: 'EN PROCESO',
-    FINISHED: 'FINALIZADO',
-    CANCELED: 'CANCELADO',
+    PENDING: 'Pendiente',
+    WAITING: 'En espera',
+    IN_PROGRESS: 'En progreso',
+    FINISHED: 'Finalizado',
+    CANCELED: 'Cancelado',
+}
+
+export const PATIENT_STATUS = {
+    ACTIVE: 'Activo',
+    INACTIVE: 'Inactivo',
+}
+
+export const PLATFORMS = {
+    GOOGLE: 'GOOGLE',
+    FACEBOOK: 'FACEBOOK',
+    NATIVE: 'NATIVE',
 }

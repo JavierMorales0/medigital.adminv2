@@ -36,14 +36,20 @@ const CalendarPage = () => (
     </DynamicImport>
 )
 
-const ConsultsPage = () => (
-    <DynamicImport load={() => import('@/pages/ConsultsPage')}>
+const ConsultingRoomPage = () => (
+    <DynamicImport load={() => import('@/pages/ConsultingRoomPage.jsx')}>
         {(Component) => Component === null ? <p>Loading</p> : <Component/>}
     </DynamicImport>
 )
 
 const WaitingRoomPage = () => (
     <DynamicImport load={() => import('@/pages/WaitingRoomPage')}>
+        {(Component) => Component === null ? <p>Loading</p> : <Component/>}
+    </DynamicImport>
+)
+
+const NewConsultPage = () => (
+    <DynamicImport load={() => import('@/pages/NewConsultPage')}>
         {(Component) => Component === null ? <p>Loading</p> : <Component/>}
     </DynamicImport>
 )
@@ -66,12 +72,13 @@ const RoutesApp = () => {
                 <Route path="calendario"
                        element={<ProtectedAuthRoute><CalendarPage/></ProtectedAuthRoute>}
                 />
-                <Route path="consultas"
-                       element={<ProtectedAuthRoute><ConsultsPage/></ProtectedAuthRoute>}
+                <Route path="consultorio"
+                       element={<ProtectedAuthRoute><ConsultingRoomPage/></ProtectedAuthRoute>}
                 />
                 <Route path="sala-de-espera"
-                       element={<ProtectedAuthRoute><WaitingRoomPage/></ProtectedAuthRoute>}
-                />
+                       element={<ProtectedAuthRoute><WaitingRoomPage/></ProtectedAuthRoute>}>
+                    <Route path="nueva" element={<ProtectedAuthRoute><NewConsultPage/></ProtectedAuthRoute>}/>
+                </Route>
             </Route>
         </Routes>
     )

@@ -34,7 +34,9 @@ const style = {
         display: 'flex',
         height: '100vh',
     }, body: {
-        flex: 1,
+        flexGrow: 1,
+        flexShrink: 1,
+        minWidth: 0,
     }
 }
 export default LayoutPage;

@@ -15,6 +15,7 @@ const Page = ({title, children}) => {
 const style = {
     container: {
         padding: '16px 40px',
+        position: 'relative',
     }
 }
 
