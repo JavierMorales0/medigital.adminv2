@@ -144,6 +144,34 @@ const GeneralInformationComponent = ({data}) => {
                         </P16SemiBold>
                     </div>
                 </div>
+                <div style={{display: 'flex', flexDirection: 'row', gap: '16px', justifyContent: 'space-between'}}>
+                    <div>
+                        <P10Regular sx={style.text}>
+                            Responsables
+                        </P10Regular>
+                        {
+                            data?.responsibles?.length === 0 && <P16SemiBold sx={style.textValues}> No posee </P16SemiBold>
+                        }
+                        {
+                            data?.responsibles?.length > 0 && (
+                                <ul>
+                                    {
+                                        data?.responsibles?.map((responsible, index) => {
+                                            return (
+                                                <li key={index}>
+                                                    <P16SemiBold sx={style.textValues}>
+                                                        {responsible}
+                                                    </P16SemiBold>
+                                                </li>
+                                            )
+                                        })
+                                    }
+                                </ul>
+                            )
+                        }
+
+                    </div>
+                </div>
             </div>
         </div>
     )

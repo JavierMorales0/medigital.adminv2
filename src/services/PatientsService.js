@@ -14,7 +14,11 @@ export default function PatientsService() {
         refetchOnWindowFocus: false,
     });
 
-    const {data: dataAllInfoSpecificPatient, isLoading: isLoadingAllInfoSpecificPatient} = useQuery({
+    const {
+            data: dataAllInfoSpecificPatient,
+            isLoading: isLoadingAllInfoSpecificPatient,
+            refetch: refetchAllInfoSpecificPatient
+        } = useQuery({
         queryKey: ["all-info-specific-patient", temporalSelectedAppointment?.resource?.dui],
         queryFn: () => getAllInfoSpecificPatient(temporalSelectedAppointment?.resource?.dui),
         refetchOnWindowFocus: false,
@@ -27,6 +31,7 @@ export default function PatientsService() {
         dataPatients: dataPatients?.data,
         isLoadingPatients,
         dataAllInfoSpecificPatient: dataAllInfoSpecificPatient?.data,
-        isLoadingAllInfoSpecificPatient
+        isLoadingAllInfoSpecificPatient,
+        refetchAllInfoSpecificPatient
     };
 }

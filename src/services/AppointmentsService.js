@@ -8,7 +8,7 @@ export default function AppointmentsService() {
 
     const {getAppointments} = AppointmentsRepository();
     const {specificDate: date} = useAppointmentsState();
-    const {data, isLoading} = useQuery({
+    const {data, isLoading, refetch} = useQuery({
         queryKey: ["appointments"],
         queryFn: () => getAppointments(),
         refetchOnWindowFocus: false,
@@ -32,6 +32,7 @@ export default function AppointmentsService() {
     return {
         data: data?.data,
         dataToSchedule,
-        isLoading
+        isLoading,
+        refetch
     }
 }

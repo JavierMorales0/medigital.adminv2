@@ -9,6 +9,7 @@ const PlatformChipComponent = ({platform}) => {
                                 PLATFORMS[platform] === PLATFORMS.FACEBOOK ? 'var(--blue-200)' :
                                     PLATFORMS[platform] === PLATFORMS.NATIVE ? 'var(--cyan-200)' : 'var(--cyan-200)',
             padding: '4px 8px',
+            marginLeft: '8px',
         },
         text: {
             padding: 0,

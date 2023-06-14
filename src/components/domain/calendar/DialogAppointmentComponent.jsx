@@ -10,13 +10,13 @@ import NoDetailsComponent from "@/components/domain/calendar/NoDetailsComponent.
 import {useMemo} from "react";
 
 const DialogAppointmentComponent = ({visible, handleHide, appointment}) => {
-    const {dataAllInfoSpecificPatient, isLoadingAllInfoSpecificPatient} = PatientsService()
+    const {dataAllInfoSpecificPatient: data, isLoadingAllInfoSpecificPatient: isLoading} = PatientsService()
     const header = () => {
         return (<P14SemiBold>Detalles de cita</P14SemiBold>)
     }
     const patientExists = useMemo(() => {
-        return dataAllInfoSpecificPatient?.patient?._id
-    }, [dataAllInfoSpecificPatient])
+        return data?.patient?._id
+    }, [data])
     return (
         <Dialog visible={visible} onHide={handleHide} style={style.dialog} position='bottom-right' header={header}
                 draggable={false} resizable={false}>
@@ -55,11 +55,9 @@ const DialogAppointmentComponent = ({visible, handleHide, appointment}) => {
                         </div>
                         <div style={style.content}>
                             {
-                                !isLoadingAllInfoSpecificPatient && (
-                                    dataAllInfoSpecificPatient
-                                        ? <AppointmentAllInfoDetailsComponent data={dataAllInfoSpecificPatient}/>
-                                        : <NoDetailsComponent appointment={appointment?.resource}/>
-                                )
+                                !isLoading && (data
+                                    ? <AppointmentAllInfoDetailsComponent data={data}/>
+                                    : <NoDetailsComponent appointment={appointment?.resource}/>)
                             }
                         </div>
                     </>
