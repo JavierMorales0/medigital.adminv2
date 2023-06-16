@@ -5,17 +5,17 @@ export const temporalConsultState = hookstate({
     date: null,
     startHour: null,
     endHour: null,
-    patientId: null,
-    patientName: '',
-    doctor: null,
+    patient: '',
+    doctor: '',
     reason: '',
     physicalFindings: '',
     medicalRecord: '',
     diagnostic: [],
     prescriptions: [],
     observations: '',
-    prevAppointment: null,
+    prevAppointment: '',
     status: null,
+    isBlockPrevAppointment: null,
 });
 
 export const useTemporalConsultState = () => {
@@ -28,10 +28,8 @@ export const useTemporalConsultState = () => {
         setStartHour: (hour) => state.startHour.set(hour),
         endHour: state.endHour.value,
         setEndHour: (hour) => state.endHour.set(hour),
-        patientId: state.patientId.value,
-        setPatientId: (id) => state.patientId.set(id),
-        patientName: state.patientName.value,
-        setPatientName: (name) => state.patientName.set(name),
+        patient: state.patient.value,
+        setPatient: (patient) => state.patient.set(patient),
         doctor: state.doctor.value,
         setDoctor: (doctor) => state.doctor.set(doctor),
         reason: state.reason.value,
@@ -52,6 +50,8 @@ export const useTemporalConsultState = () => {
         setPrevAppointment: (prevAppointment) => state.prevAppointment.set(prevAppointment),
         status: state.status.value,
         setStatus: (status) => state.status.set(status),
+        isBlockPrevAppointment: state.isBlockPrevAppointment.value,
+        setIsBlockPrevAppointment: (block) => state.isBlockPrevAppointment.set(block),
         init: ()=>{
             state.date.set(format(new Date(), 'yyyy-MM-dd'));
         },
@@ -59,27 +59,71 @@ export const useTemporalConsultState = () => {
             state.date.set(null);
             state.startHour.set(null);
             state.endHour.set(null);
-            state.patientId.set(null);
-            state.patientName.set('');
-            state.doctor.set(null);
+            state.patient.set('');
+            state.doctor.set('');
             state.reason.set('');
             state.physicalFindings.set('');
             state.medicalRecord.set('');
             state.diagnostic.set([]);
             state.prescriptions.set([]);
             state.observations.set('');
-            state.prevAppointment.set(null);
+            state.prevAppointment.set('');
             state.status.set(null);
+            state.isBlockPrevAppointment.set(null);
         },
         isEmpty: () => {
             return Object.values(state.get()).every((value) => value === null || value === '' || value.length === 0);
         },
-        fillDataWithPrevAppointment: ({_id, name, reason, observations}) => {
+        fillDataWithPrevAppointment: ({_id, patient, reason, observations}) => {
             state.date.set(format(new Date(), 'yyyy-MM-dd'));
             state.prevAppointment.set(_id);
-            state.patientName.set(name);
+            state.patient.set(patient);
             state.reason.set(reason);
             state.observations.set(observations);
+            state.isBlockPrevAppointment.set(true);
         },
+        createObjectForServer: () => {
+            const data = state.get();
+            return {
+                date: data.date,
+                patient: data.patient,
+                reason: data.reason,
+                observations: data.observations,
+                prevAppointment: data.prevAppointment,
+                doctor: data.doctor,
+            }
+        },
+        validateCreateObjectForServer: () => {
+            const data = state.get();
+            if (data.date === null || data.date === '') {
+                return {
+                    msg: 'La fecha es requerida',
+                    status: false,
+                };
+            }
+            if (data.patient === null || data.patient === '' || data.patient.length !== 24) {
+                return {
+                    msg: 'El paciente es requerido y debe ser un ID válido',
+                    status: false,
+                }
+            }
+            if (data.reason === null || data.reason === '') {
+                return {
+                    msg: 'El motivo es requerido',
+                    status: false,
+                }
+            }
+            if (data.doctor === null || data.doctor === '' || data.doctor.length !== 24) {
+                return {
+                    msg: 'El doctor es requerido y debe ser un ID válido',
+                    status: false,
+                }
+            }
+            return {
+                msg: '',
+                status: true,
+            }
+
+        }
     };
 };

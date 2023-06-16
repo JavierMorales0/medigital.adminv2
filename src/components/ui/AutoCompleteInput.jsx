@@ -1,6 +1,6 @@
 import {AutoComplete} from 'primereact/autocomplete';
 
-const AutoCompleteTools = ({
+const AutoCompleteInput = ({
                                completeMethod,
                                value,
                                suggestions,
@@ -21,4 +21,4 @@ const AutoCompleteTools = ({
     )
 }
 
-export default AutoCompleteTools;
+export default AutoCompleteInput;

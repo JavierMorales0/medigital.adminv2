@@ -2,14 +2,22 @@ import ToogleThemeButton from "@/components/ui/ToogleThemeButton.jsx";
 import { Button } from "primereact/button";
 import AutoCompleteToolsContainer from "@/components/domain/tools/AutoCompleteToolsContainer.jsx";
 import ProfileContainer from "@/components/domain/users/ProfileContainer.jsx";
+import {useTemporalConsultState} from "@/hooks/TemporalConsultState.js";
+import {useNavigate} from "react-router-dom";
 
 const NavbarContainer = () => {
+  const temporalConsutState = useTemporalConsultState();
+  const navigate = useNavigate();
+  const handleCreateConsult = () => {
+      temporalConsutState?.init()
+      navigate('/sala-de-espera')
+  }
   return (
     <nav style={style.container}>
       <div style={style.actionsContainer}>
         <AutoCompleteToolsContainer />
         <ProfileContainer />
-        <Button icon="pi pi-plus" aria-label="agregar consulta" />
+        <Button icon="pi pi-plus" aria-label="agregar consulta" onClick={handleCreateConsult} />
       </div>
       <div>
         <ToogleThemeButton hideLabel styleProp={style.themeButton} />

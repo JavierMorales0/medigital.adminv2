@@ -76,9 +76,7 @@ const RoutesApp = () => {
                        element={<ProtectedAuthRoute><ConsultingRoomPage/></ProtectedAuthRoute>}
                 />
                 <Route path="sala-de-espera"
-                       element={<ProtectedAuthRoute><WaitingRoomPage/></ProtectedAuthRoute>}>
-                    <Route path="nueva" element={<ProtectedAuthRoute><NewConsultPage/></ProtectedAuthRoute>}/>
-                </Route>
+                       element={<ProtectedAuthRoute><WaitingRoomPage/></ProtectedAuthRoute>}/>
             </Route>
         </Routes>
     )

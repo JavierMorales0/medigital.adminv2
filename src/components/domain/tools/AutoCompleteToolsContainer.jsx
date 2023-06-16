@@ -1,4 +1,4 @@
-import AutoCompleteTools from "@/components/ui/AutoCompleteTools.jsx";
+import AutoCompleteInput from "@/components/ui/AutoCompleteInput.jsx";
 import {useNavigate} from "react-router-dom";
 import {useHookstate} from "@hookstate/core";
 import ToolsService from "@/services/ToolsService.js";
@@ -41,7 +41,7 @@ const AutoCompleteToolsContainer = () => {
         navigate(url)
     }
     return (
-        <AutoCompleteTools
+        <AutoCompleteInput
             completeMethod={handleComplete}
             value={search.get()}
             suggestions={JSON.parse(JSON.stringify(suggestions.value))}

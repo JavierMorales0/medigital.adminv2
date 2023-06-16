@@ -8,15 +8,32 @@ import PatientsService from "@/services/PatientsService.js";
 import AppointmentAllInfoDetailsComponent from "@/components/domain/calendar/AppointmentAllInfoDetailsComponent.jsx";
 import NoDetailsComponent from "@/components/domain/calendar/NoDetailsComponent.jsx";
 import {useMemo} from "react";
+import {useTemporalConsultState} from "@/hooks/TemporalConsultState.js";
+import {useNavigate} from "react-router-dom";
 
 const DialogAppointmentComponent = ({visible, handleHide, appointment}) => {
     const {dataAllInfoSpecificPatient: data, isLoadingAllInfoSpecificPatient: isLoading} = PatientsService()
+    const temporalConsultState = useTemporalConsultState();
+    const navigate = useNavigate()
     const header = () => {
         return (<P14SemiBold>Detalles de cita</P14SemiBold>)
     }
     const patientExists = useMemo(() => {
         return data?.patient?._id
     }, [data])
+
+    const handleClickHasArrived = () => {
+        temporalConsultState?.init()
+        const consult = {
+            _id: appointment?.resource?._id,
+            patient: data?.patient?._id,
+            reason: appointment?.resource?.reason,
+            observations: appointment?.resource?.observations,
+        }
+        temporalConsultState.fillDataWithPrevAppointment(consult);
+        handleHide()
+        navigate('/sala-de-espera')
+    }
     return (
         <Dialog visible={visible} onHide={handleHide} style={style.dialog} position='bottom-right' header={header}
                 draggable={false} resizable={false}>
@@ -45,12 +62,21 @@ const DialogAppointmentComponent = ({visible, handleHide, appointment}) => {
 
                             </div>
                             <div style={style.headerActions}>
-                                <Button label="Ha llegado" size='small' type='button' severity='success' text
-                                        icon="pi pi-check-circle" iconPos="left" disabled={!patientExists}
-                                />
-                                <Button label="Reprogramar" size='small' type='button' severity='secondary' text
-                                        icon="pi pi-calendar-plus" iconPos="left"
-                                />
+                                {
+                                    appointment?.resource?.status === 'PENDING' && (
+                                        <>
+                                            <Button label="Ha llegado" size='small' type='button' severity='success' text
+                                                    icon="pi pi-check-circle" iconPos="left" disabled={!patientExists}
+                                                    onClick={handleClickHasArrived}
+                                            />
+                                            <Button label="Reprogramar" size='small' type='button' severity='secondary' text
+                                                    icon="pi pi-calendar-plus" iconPos="left"
+                                            />
+                                        </>
+                                    )
+                                }
+
+
                             </div>
                         </div>
                         <div style={style.content}>
