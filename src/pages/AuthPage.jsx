@@ -5,49 +5,43 @@ import P16Bold from "@/components/ui/P16Bold.jsx";
 import {InputText} from 'primereact/inputtext';
 import {Password} from 'primereact/password';
 import {Checkbox} from "primereact/checkbox";
-import {useHookstate} from "@hookstate/core";
 import TextAction from "@/components/ui/TextAction.jsx";
-import {useEffect, useRef} from "react";
 import P12Regular from "@/components/ui/P12Regular.jsx";
 import P16Regular from "@/components/ui/P16Regular.jsx";
 import P14Regular from "@/components/ui/P14Regular.jsx";
 import Page from "@/pages/Page.jsx";
+import {Controller, useForm} from "react-hook-form";
+
 
 const AuthPage = () => {
-    const usernameRef = useRef(null)
-    const passwordRef = useRef(null)
+    const defaultValues = {
+        username: '',
+        password: '',
+        rememberMe: false
+    }
+    const {control, formState: {errors}, handleSubmit, reset} = useForm({defaultValues});
 
     const {login} = AuthService();
-
-    const rememberMe = useHookstate(false)
-
-    useEffect(() => {
-        usernameRef.current.focus()
-    }, [])
 
     const handleForgotPassword = () => {
         console.log('forgot password')
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const formData = {
-            username: usernameRef.current.value,
-            password: passwordRef.current.getInput().value,
-            rememberMe: rememberMe.value
-        }
-        login.mutate(formData);
+    const handleSubmitAuth = (data) => {
+        login.mutate(data);
     }
 
     const handleCreateUser = () => {
         console.log('create user')
     }
+    const getFormErrorMessage = (name) => {
+        return errors[name] && <small className="p-error">{errors[name].message}</small>
+    };
 
     return (<Page title='Autenticación'>
             <ToogleThemeButton hideLabel styleProp={style.button}/>
             <div style={style.container}>
-                {login.error && console.log(login.error.response.data.msg)}
-                <form style={style.subcontainer} onSubmit={handleSubmit} id='auth-form'>
+                <form style={style.subcontainer} onSubmit={handleSubmit(handleSubmitAuth)} id='auth-form'>
                     <P16Bold color={'--highlight-text-color'}>
                         moME
                     </P16Bold>
@@ -58,26 +52,38 @@ const AuthPage = () => {
                     </div>
                     <div style={style.inputContainer}>
                         <span className="p-float-label">
-                        <InputText id="username" style={{width: '100%'}} ref={usernameRef}/>
+                            <Controller name="username" control={control} rules={{required: 'Usuario requerido'}}
+                                        render={({field, fieldState}) => (
+                                            <InputText id={field.name} style={{width: '100%'}} {...field}
+                                                       keyfilter="alphanum"/>
+                                        )}/>
                         <label htmlFor="username">Usuario</label>
                     </span>
+                        {getFormErrorMessage('username')}
 
                     </div>
                     <div style={style.inputContainer}>
                         <span className="p-float-label">
-                        <Password inputId="password" ref={passwordRef}
-                                  feedback={false}/>
+                            <Controller name="password" control={control} rules={{required: 'Contraseña requerida'}}
+                                        render={({field, fieldState}) => (
+                                            <Password id={field.name} {...field}
+                                                      feedback={false}/>
+                                        )}/>
                         <label htmlFor="password">Contraseña</label>
                         </span>
+                        {getFormErrorMessage('password')}
                     </div>
                     <div style={style.actionsContainer}>
                         <div style={style.rememberMeContainer}>
-                            <Checkbox
-                                id="rememberMe"
-                                onChange={(e) => rememberMe.set(e.checked)}
-                                checked={rememberMe?.value}
-                            />
+                            <Controller name="rememberMe" control={control} render={({field, fieldState}) => (
+                                <Checkbox
+                                    inputId={field.name}
+                                    onChange={(e) => field.onChange(e.checked)}
+                                    checked={field.value}
+                                />
+                            )}/>
                             <label htmlFor="rememberMe" style={style.smallLabel}>Recuérdame</label>
+                            {getFormErrorMessage('rememberMe')}
                         </div>
                         <TextAction
                             text={'¿Olvidaste tu contraseña?'}
@@ -86,7 +92,7 @@ const AuthPage = () => {
                             fontWeight='600'
                             color='--highlight-text-color'/>
                     </div>
-                    <LoginButton onSubmit={handleSubmit} fullWidth/>
+                    <LoginButton fullWidth/>
                     <P12Regular>
                         ¿No tienes una cuenta?
                         <TextAction text={'Comunícate con tu administrador'}

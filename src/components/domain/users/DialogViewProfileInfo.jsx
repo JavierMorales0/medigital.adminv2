@@ -21,7 +21,7 @@ const DialogViewProfileInfo = ({isVisible, handleHide}) => {
                         <img src={ownInfo?.user?.profile_picture} alt="Avatar" width="150px" height="150px"/>
                         <div className="flex flex-column gap-2">
                             <label htmlFor="username">Usuario</label>
-                            <InputText id="username" value={ownInfo?.user?.username} readOnly={true}/>
+                            <InputText id="username" value={ownInfo?.user?.username} readOnly={true} keyfilter="alphanum"/>
                         </div>
                     </div>
 

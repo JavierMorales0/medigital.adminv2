@@ -22,6 +22,13 @@ export const APPOINTMENT_STATUS = {
     CANCELED: 'Cancelado',
 }
 
+export const CONSULT_STATUS = {
+    WAITING: 'EN SALA DE ESPERA',
+    IN_PROGRESS: 'EN PROCESO',
+    FINISHED: 'FINALIZADA',
+    CANCELED: 'CANCELADA',
+}
+
 export const PATIENT_STATUS = {
     ACTIVE: 'Activo',
     INACTIVE: 'Inactivo',

@@ -3,7 +3,7 @@ import ToolsMenu from "@/components/ui/ToolsMenu.jsx";
 
 const SidebarContainer = () => {
     return (
-        <div style={style.container}>
+        <aside style={style.container}>
             <div style={style.profile}>
                 <span>MEDIGITAL</span>
                 <span style={style.profile.primaryText}>.admin</span>
@@ -14,7 +14,7 @@ const SidebarContainer = () => {
             <div style={style.actions}>
                 <LogoutButton/>
             </div>
-        </div>
+        </aside>
     )
 }
 

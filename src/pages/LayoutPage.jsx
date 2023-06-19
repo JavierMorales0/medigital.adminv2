@@ -32,11 +32,12 @@ const LayoutPage = () => {
 const style = {
     container: {
         display: 'flex',
-        height: '100vh',
+        height: '100vh'
     }, body: {
         flexGrow: 1,
         flexShrink: 1,
         minWidth: 0,
+        overflowY: 'auto',
     }
 }
 export default LayoutPage;

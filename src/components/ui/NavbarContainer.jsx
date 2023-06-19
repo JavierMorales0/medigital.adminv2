@@ -35,6 +35,10 @@ const style = {
     padding: "8px 32px",
     height: "80px",
     boxShadow: "0px 3px 28px -7px var(--highlight-bg)",
+    position: "sticky",
+    top: 0,
+    zIndex: 100,
+    backgroundColor: "var(--surface-0)",
   },
   actionsContainer: {
     width: "50%",

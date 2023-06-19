@@ -3,8 +3,14 @@ import {useMutation, useQuery} from "@tanstack/react-query";
 import {useTemporalConsultState} from "@/hooks/TemporalConsultState.js";
 
 export default function ConsultsService(){
-    const { getAllToday: _getAllToday, create : _create} = ConsultsRepository();
+    const { getAll: _getAll, getAllToday: _getAllToday, create : _create} = ConsultsRepository();
     const temporalConsultState = useTemporalConsultState();
+
+    const {data: dataConsults, isLoading: isLoadingConsults} = useQuery({
+        queryKey: ['consults'],
+        queryFn: _getAll,
+        refetchOnWindowFocus: false,
+    })
 
     const {data: dataConsultsToday, isLoading: isLoadingConsultsToday} = useQuery({
         queryKey: ['consultsToday'],
@@ -25,6 +31,8 @@ export default function ConsultsService(){
     })
 
     return {
+        dataConsults: dataConsults?.data,
+        isLoadingConsults,
         dataConsultsToday: dataConsultsToday?.data,
         isLoadingConsultsToday,
         create
