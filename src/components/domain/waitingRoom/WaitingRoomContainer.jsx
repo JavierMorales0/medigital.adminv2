@@ -14,44 +14,44 @@ const WaitingRoomContainer = () => {
 
     const {dataConsults: data} = ConsultsService();
     const sortOptionSelected = useHookstate(null)
-    const filterOptionSelected = useHookstate(null)
+    const filters = useHookstate({
+        status: null,
+        date: null,
+        prevAppointment: null,
+    })
+
     const processedData = useMemo(() => {
         if (!data) return []
         let _data = [...data]
-        const filter = filterOptionSelected?.get()
-        if (filter) {
-            _data = _data?.filter((item) => {
-                if (filterOptionSelected?.value === 'status') {
-                    return item?.status === filter
+        return _data
+            .filter((item) => {
+                return item;
+            })
+            .sort((a, b) => {
+                if (sortOptionSelected?.value === '_id') {
+                    return a?._id - b?._id
+                }
+                if (sortOptionSelected?.value === 'date') {
+                    return a?.date - b?.date
+                }
+                if (sortOptionSelected?.value === 'patient.first_name') {
+                    return a?.patient?.first_name.localeCompare(b?.patient?.first_name)
+                }
+                if (sortOptionSelected?.value === 'doctor.employee.first_name') {
+                    return a?.doctor?.employee?.first_name.localeCompare(b?.doctor?.employee?.first_name)
+                }
+                if (sortOptionSelected?.value === 'status') {
+                    return a?.status?.localeCompare(b?.status)
                 }
             })
-        }
-        return _data?.sort((a, b) => {
-            if (sortOptionSelected?.value === '_id') {
-                return a?._id - b?._id
-            }
-            if (sortOptionSelected?.value === 'date') {
-                return a?.date - b?.date
-            }
-            if (sortOptionSelected?.value === 'patient.first_name') {
-                return a?.patient?.first_name.localeCompare(b?.patient?.first_name)
-            }
-            if (sortOptionSelected?.value === 'doctor.employee.first_name') {
-                return a?.doctor?.employee?.first_name.localeCompare(b?.doctor?.employee?.first_name)
-            }
-            if (sortOptionSelected?.value === 'status') {
-                return a?.status?.localeCompare(b?.status)
-            }
-        })
-    }, [data, sortOptionSelected])
+    }, [data, sortOptionSelected, filters])
 
     const handleSort = (e) => {
         sortOptionSelected.set(e.value)
     }
 
     const handleFilter = (key, value) => {
-        console.log(key, value)
-
+        filters.merge({[key]: value})
     }
 
     return (
@@ -66,6 +66,7 @@ const WaitingRoomContainer = () => {
                                           sortOptionSelected={sortOptionSelected?.get()}
                                           sortOptions={sortOptions}
                                           handleSort={handleSort}
+                                          filters={filters?.get()}
                                           handleFilter={handleFilter}
                         />
                     )

@@ -14,6 +14,7 @@ import {RadioButton} from "primereact/radiobutton";
 import {Calendar} from "primereact/calendar";
 import {ToggleButton} from 'primereact/togglebutton';
 import {CONSULT_STATUS} from "@/config/index.js";
+import {Checkbox} from "primereact/checkbox";
 
 const statusOptions = [
     {label: 'En espera', value: 'WAITING'},
@@ -22,7 +23,7 @@ const statusOptions = [
     {label: 'Cancelada', value: 'CANCELED'},
 ]
 
-const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, handleFilter}) => {
+const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, filters, handleFilter}) => {
     const overlayPanel = useRef(null);
 
     const header = (
@@ -84,7 +85,7 @@ const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, ha
                                         }}>
                                             <RadioButton
                                                 value={status.value}
-                                                // checked={formik.values.item === btn.value}
+                                                checked={filters['status'] === status.value}
                                                 onChange={(e) => {
                                                     handleFilter('status', e.value)
                                                 }}
@@ -119,6 +120,7 @@ const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, ha
                                 <P12Regular sx={{margin: 0}}>Fecha:</P12Regular>
                                 <Calendar
                                     dateFormat="dd 'de' MM, yy"
+                                    value={filters['date']}
                                     style={{flexGrow: 1}}
                                     showButtonBar
                                     onChange={(e) => {
@@ -133,14 +135,12 @@ const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, ha
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
                                 gap: '8px',
-                                width: '175px',
+                                width: '125px',
                                 flexWrap: 'nowrap'
                             }}>
-                                <P12Regular sx={{margin: 0}}>Con cita previa:</P12Regular>
-                                <ToggleButton size="small" onLabel="Si" offLabel="No" checked={false}
-                                              onChange={(e) => {
-                                                  handleFilter('prevAppointment', e.value)
-                                              }}/>
+                                <P12Regular sx={{margin: 0}}>Solo cita previa:</P12Regular>
+                                <Checkbox inputId="prevAppointment" checked={filters['prevAppointment']} onChange={(e) => { handleFilter('prevAppointment', e.checked) }}
+                                ></Checkbox>
                             </div>
                         </div>
 
