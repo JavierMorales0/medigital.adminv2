@@ -1,10 +1,11 @@
 import ConsultsRepository from "@/repositories/ConsultsRepository.js";
-import {useMutation, useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {useTemporalConsultState} from "@/hooks/TemporalConsultState.js";
 
 export default function ConsultsService(){
     const { getAll: _getAll, getAllToday: _getAllToday, create : _create} = ConsultsRepository();
     const temporalConsultState = useTemporalConsultState();
+    const queryClient = useQueryClient();
 
     const {data: dataConsults, isLoading: isLoadingConsults} = useQuery({
         queryKey: ['consults'],
@@ -23,6 +24,7 @@ export default function ConsultsService(){
         onSuccess: (data)=>{
             if(data.status === 201){
                 temporalConsultState?.clear();
+                queryClient.invalidateQueries({queryKey: ['consults', 'consultsToday']});
             }
         },
         onError: (error)=>{

@@ -12,11 +12,13 @@ import {useRef} from "react";
 import P12Regular from "@/components/ui/P12Regular.jsx";
 import {RadioButton} from "primereact/radiobutton";
 import {Calendar} from "primereact/calendar";
-import {ToggleButton} from 'primereact/togglebutton';
 import {CONSULT_STATUS} from "@/config/index.js";
 import {Checkbox} from "primereact/checkbox";
+import P10Regular from "@/components/ui/P10Regular.jsx";
+import P14Regular from "@/components/ui/P14Regular.jsx";
 
 const statusOptions = [
+    {label: 'Todas', value: null},
     {label: 'En espera', value: 'WAITING'},
     {label: 'En consulta', value: 'IN PROGRESS'},
     {label: 'Finalizada', value: 'FINISHED'},
@@ -60,9 +62,18 @@ const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, fi
                         size="small"
                         onClick={(e) => overlayPanel.current.toggle(e)}/>
                 <OverlayPanel ref={overlayPanel}>
-                    <form style={{display: 'flex', flexDirection: 'column', gap: '8px', width: '450px'}}
-                          onSubmit={handleFilter}>
-                        <P12SemiBold sx={{margin: 0}}>Filtrar por</P12SemiBold>
+                    <section style={{display: 'flex', flexDirection: 'column', gap: '8px', width: '450px'}}>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            width: '100%',
+                            flexWrap: 'nowrap',
+                            margin: '8px 0px'
+                        }}>
+                            <P12SemiBold sx={{margin: 0}}>Filtrar por</P12SemiBold>
+                        </div>
                         <div style={{
                             display: 'flex',
                             flexDirection: 'row',
@@ -139,36 +150,59 @@ const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, fi
                                 flexWrap: 'nowrap'
                             }}>
                                 <P12Regular sx={{margin: 0}}>Solo cita previa:</P12Regular>
-                                <Checkbox inputId="prevAppointment" checked={filters['prevAppointment']} onChange={(e) => { handleFilter('prevAppointment', e.checked) }}
+                                <Checkbox inputId="prevAppointment" checked={filters['prevAppointment']}
+                                          onChange={(e) => {
+                                              handleFilter('prevAppointment', e.checked)
+                                          }}
                                 ></Checkbox>
                             </div>
                         </div>
 
-                    </form>
+                    </section>
                 </OverlayPanel>
             </div>
         </div>
     )
 
     const statusTag = (rowData) => {
-        return (<Tag severity={
+        return (<Tag  severity={
             rowData?._status === CONSULT_STATUS.WAITING ? 'info' :
                 rowData?._status === CONSULT_STATUS.IN_PROGRESS ? 'warning' :
                     rowData?._status === CONSULT_STATUS.FINISHED ? 'success' :
                         rowData?._status === CONSULT_STATUS.CANCELED ? 'danger' : 'info'
         }
-        >{rowData?._status?.replaceAll(' ', '')?.trim()?.slice(0,3)}</Tag>)
+        >{rowData?._status?.replaceAll(' ', '')?.trim()?.slice(0, 3)}</Tag>)
     }
 
     return (
-        <DataTable value={data} tableStyle={style.table} header={header}>
+        <DataTable value={data} tableStyle={style.table} header={header} size='small'>
             {/*<Column field="_id" header="ID"></Column>*/}
-            <Column field="reason" header="Motivo"></Column>
-            <Column field="observations" header="Observaciones" body={(rowData) => { return (<span>{rowData?.observations?.slice(0, 20)}...</span>)}}></Column>
-            <Column field="patient" header="Paciente" body={(rowData) => { return (<span>{rowData?.patient?.first_name} {rowData?.patient?.last_name}</span>)}}></Column>
-            <Column field="doctor.employee" header="Médico" body={(rowData) => { return (<span>{rowData?.doctor?.employee?.first_name} {rowData?.doctor?.employee?.last_name}</span>)}}></Column>
+            <Column field="reason" header="Motivo/obs." body={(rowData) => {
+                return (<div>
+                    <P14SemiBold sx={{margin: 0}}>{rowData?.reason}</P14SemiBold>
+                    <P12Regular sx={{margin: 0}}>{
+                        (rowData?.observations?.length > 30)
+                            ? rowData?.observations?.slice(0, 25) + '...'
+                            : rowData?.observations || 'SIN ESPECIFICAR'}
+                    </P12Regular>
+                </div>)
+            }}></Column>
+            <Column field="patient" header="Paciente" body={(rowData) => {
+                return (<div>
+                    <P14Regular sx={{margin: 0}}>{rowData?.patient?.first_name} {rowData?.patient?.last_name}</P14Regular>
+                    <P12Regular sx={{margin: 0}}>{rowData?.patient?.dui}</P12Regular>
+                </div>)
+            }}></Column>
+            <Column field="doctor.employee" header="Médico" body={(rowData) => {
+                return (<div>
+                    <P14Regular sx={{margin: 0}}>{rowData?.doctor?.employee?.first_name} {rowData?.doctor?.employee?.last_name}</P14Regular>
+                    <P12Regular sx={{margin: 0}}>{rowData?.doctor?.specialties?.map(
+                        (specialty, index) => { return (index === 0) ? specialty : ', ' + specialty }
+                    )}</P12Regular>
+                </div>)
+            }}></Column>
             <Column field="date" header="Fecha" body={(rowData) => {
-                return (<span>{format(parseISO(rowData?.date), 'PP')}</span>)
+                return (<P14SemiBold>{format(parseISO(rowData?.date?.slice(0, 10)), 'PP')}</P14SemiBold>)
             }}></Column>
             <Column field="_status" header="Estado" body={statusTag}></Column>
         </DataTable>

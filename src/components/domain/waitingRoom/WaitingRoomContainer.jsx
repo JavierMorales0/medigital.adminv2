@@ -2,6 +2,7 @@ import ConsultsService from "@/services/ConsultsService.js";
 import TableWaitingRoom from "@/components/domain/waitingRoom/TableWaitingRoom.jsx";
 import {useHookstate} from "@hookstate/core";
 import {useMemo} from "react";
+import {isSameDay, parseISO} from "date-fns";
 
 const sortOptions = [
     {label: '_id', value: '_id'},
@@ -17,7 +18,7 @@ const WaitingRoomContainer = () => {
     const filters = useHookstate({
         status: null,
         date: null,
-        prevAppointment: null,
+        prevAppointment: false,
     })
 
     const processedData = useMemo(() => {
@@ -25,7 +26,24 @@ const WaitingRoomContainer = () => {
         let _data = [...data]
         return _data
             .filter((item) => {
-                return item;
+                //* Se obtienen las claves de los filtros activos
+                const activeFilters = Object.keys(filters?.get())?.filter((key) => {
+                    return filters?.get()[key] !== null
+                })
+                //* Si no hay filtros activos, se muestran todos los datos
+                if (activeFilters.length === 0) return true
+                //* Se comprueba que el item cumpla con todos los filtros activos
+                return activeFilters.every((key) => {
+                    if (key === 'date') {
+                        return isSameDay(parseISO(item?.[key]?.slice(0, 10)), filters?.get()?.[key])
+                    }
+                    if (key === 'prevAppointment') {
+                        return (filters?.get()?.[key] === true) ? item?.['prev_appointment'] !== null : true
+                    }
+                    if (key === 'status') {
+                        return item?.[key] === filters?.get()?.[key]
+                    }
+                })
             })
             .sort((a, b) => {
                 if (sortOptionSelected?.value === '_id') {
