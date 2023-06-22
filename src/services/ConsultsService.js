@@ -3,7 +3,13 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {useTemporalConsultState} from "@/hooks/TemporalConsultState.js";
 
 export default function ConsultsService(){
-    const { getAll: _getAll, getAllToday: _getAllToday, create : _create} = ConsultsRepository();
+    const {
+            getAll: _getAll,
+            getAllToday: _getAllToday,
+            create : _create,
+            startSpecific: _startSpecific,
+            cancelSpecific: _cancelSpecific
+    } = ConsultsRepository();
     const temporalConsultState = useTemporalConsultState();
     const queryClient = useQueryClient();
 
@@ -24,8 +30,31 @@ export default function ConsultsService(){
         onSuccess: (data)=>{
             if(data.status === 201){
                 temporalConsultState?.clear();
-                queryClient.invalidateQueries({queryKey: ['consults', 'consultsToday']});
+                queryClient.invalidateQueries({queryKey: ['consults']});
+                queryClient.invalidateQueries({queryKey: ['consultsToday']});
             }
+        },
+        onError: (error)=>{
+            console.log(error);
+        }
+    })
+
+    const startSpecific = useMutation({
+        mutationFn: _startSpecific,
+        onSuccess: (data)=>{
+            queryClient.invalidateQueries({queryKey: ['consults']});
+            queryClient.invalidateQueries({queryKey: ['consultsToday']});
+        },
+        onError: (error)=>{
+            console.log(error);
+        }
+    })
+
+    const cancelSpecific = useMutation({
+        mutationFn: _cancelSpecific,
+        onSuccess: (data)=>{
+            queryClient.invalidateQueries({queryKey: ['consults']});
+            queryClient.invalidateQueries({queryKey: ['consultsToday']});
         },
         onError: (error)=>{
             console.log(error);
@@ -37,6 +66,8 @@ export default function ConsultsService(){
         isLoadingConsults,
         dataConsultsToday: dataConsultsToday?.data,
         isLoadingConsultsToday,
-        create
+        create,
+        startSpecific,
+        cancelSpecific
     }
 }

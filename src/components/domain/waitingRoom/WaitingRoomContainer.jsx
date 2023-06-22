@@ -3,6 +3,7 @@ import TableWaitingRoom from "@/components/domain/waitingRoom/TableWaitingRoom.j
 import {useHookstate} from "@hookstate/core";
 import {useMemo} from "react";
 import {isSameDay, parseISO} from "date-fns";
+import {CONSULT_STATUS} from "@/config/index.js";
 
 const sortOptions = [
     {label: '_id', value: '_id'},
@@ -13,10 +14,10 @@ const sortOptions = [
 ]
 const WaitingRoomContainer = () => {
 
-    const {dataConsults: data} = ConsultsService();
+    const {dataConsults: data, startSpecific, cancelSpecific} = ConsultsService();
     const sortOptionSelected = useHookstate(null)
     const filters = useHookstate({
-        status: null,
+        status: 'WAITING',
         date: null,
         prevAppointment: false,
     })
@@ -72,6 +73,14 @@ const WaitingRoomContainer = () => {
         filters.merge({[key]: value})
     }
 
+    const handleGoToConsult = (_id) => {
+        startSpecific.mutate(_id)
+    }
+
+    const handleCancelConsult = (_id) => {
+        cancelSpecific.mutate(_id)
+    }
+
     return (
         <section style={style.container}>
             {/*<div>*/}
@@ -86,6 +95,8 @@ const WaitingRoomContainer = () => {
                                           handleSort={handleSort}
                                           filters={filters?.get()}
                                           handleFilter={handleFilter}
+                                          handleGoToConsult={handleGoToConsult}
+                                          handleCancelConsult={handleCancelConsult}
                         />
                     )
                 }

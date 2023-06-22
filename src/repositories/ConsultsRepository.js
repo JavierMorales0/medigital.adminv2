@@ -13,9 +13,19 @@ export default function ConsultsRepository() {
         return API.post('/consults', data)
     }
 
+    const startSpecific = async (_id) => {
+        return API.put('/consults/' + _id + '/start-specific')
+    }
+
+    const cancelSpecific = async (_id) => {
+        return API.put('/consults/' + _id + '/cancel-specific')
+    }
+
     return{
         getAll,
         getAllToday,
-        create
+        create,
+        startSpecific,
+        cancelSpecific
     }
 }

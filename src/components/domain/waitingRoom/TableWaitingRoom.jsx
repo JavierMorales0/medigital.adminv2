@@ -14,8 +14,8 @@ import {RadioButton} from "primereact/radiobutton";
 import {Calendar} from "primereact/calendar";
 import {CONSULT_STATUS} from "@/config/index.js";
 import {Checkbox} from "primereact/checkbox";
-import P10Regular from "@/components/ui/P10Regular.jsx";
 import P14Regular from "@/components/ui/P14Regular.jsx";
+import {Tooltip} from "primereact/tooltip";
 
 const statusOptions = [
     {label: 'Todas', value: null},
@@ -25,7 +25,10 @@ const statusOptions = [
     {label: 'Cancelada', value: 'CANCELED'},
 ]
 
-const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, filters, handleFilter}) => {
+const TableWaitingRoom = ({
+                              data, sortOptionSelected, sortOptions, handleSort, filters,
+                              handleFilter, handleGoToConsult, handleCancelConsult
+                          }) => {
     const overlayPanel = useRef(null);
 
     const header = (
@@ -165,13 +168,17 @@ const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, fi
     )
 
     const statusTag = (rowData) => {
-        return (<Tag  severity={
-            rowData?._status === CONSULT_STATUS.WAITING ? 'info' :
-                rowData?._status === CONSULT_STATUS.IN_PROGRESS ? 'warning' :
-                    rowData?._status === CONSULT_STATUS.FINISHED ? 'success' :
-                        rowData?._status === CONSULT_STATUS.CANCELED ? 'danger' : 'info'
-        }
-        >{rowData?._status?.replaceAll(' ', '')?.trim()?.slice(0, 3)}</Tag>)
+        return (<>
+                <Tooltip target={`#tag-${rowData?._id}`} content={rowData?._status} position="left" />
+                <Tag id={`tag-${rowData?._id}`} severity={
+                    rowData?._status === CONSULT_STATUS.WAITING ? 'info' :
+                        rowData?._status === CONSULT_STATUS.IN_PROGRESS ? 'warning' :
+                            rowData?._status === CONSULT_STATUS.FINISHED ? 'success' :
+                                rowData?._status === CONSULT_STATUS.CANCELED ? 'danger' : 'info'
+                }
+                >{rowData?._status?.replaceAll(' ', '')?.trim()?.slice(0, 3)}</Tag>
+                </>
+            )
     }
 
     return (
@@ -189,15 +196,19 @@ const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, fi
             }}></Column>
             <Column field="patient" header="Paciente" body={(rowData) => {
                 return (<div>
-                    <P14Regular sx={{margin: 0}}>{rowData?.patient?.first_name} {rowData?.patient?.last_name}</P14Regular>
+                    <P14Regular
+                        sx={{margin: 0}}>{rowData?.patient?.first_name} {rowData?.patient?.last_name}</P14Regular>
                     <P12Regular sx={{margin: 0}}>{rowData?.patient?.dui}</P12Regular>
                 </div>)
             }}></Column>
             <Column field="doctor.employee" header="Médico" body={(rowData) => {
                 return (<div>
-                    <P14Regular sx={{margin: 0}}>{rowData?.doctor?.employee?.first_name} {rowData?.doctor?.employee?.last_name}</P14Regular>
+                    <P14Regular
+                        sx={{margin: 0}}>{rowData?.doctor?.employee?.first_name} {rowData?.doctor?.employee?.last_name}</P14Regular>
                     <P12Regular sx={{margin: 0}}>{rowData?.doctor?.specialties?.map(
-                        (specialty, index) => { return (index === 0) ? specialty : ', ' + specialty }
+                        (specialty, index) => {
+                            return (index === 0) ? specialty : ', ' + specialty
+                        }
                     )}</P12Regular>
                 </div>)
             }}></Column>
@@ -205,6 +216,48 @@ const TableWaitingRoom = ({data, sortOptionSelected, sortOptions, handleSort, fi
                 return (<P14SemiBold>{format(parseISO(rowData?.date?.slice(0, 10)), 'PP')}</P14SemiBold>)
             }}></Column>
             <Column field="_status" header="Estado" body={statusTag}></Column>
+            <Column header="Acciones" body={(rowData) => {
+                return (
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        gap: '16px',
+                        width: '100%',
+                        minWidth: '200px',
+                        margin: '0 auto'
+                    }}>
+                        {
+                            rowData?._status === CONSULT_STATUS.WAITING && (
+                                <>
+                                    <Button icon="pi pi-align-center" text rounded raised aria-label="Tomar signos vitales"
+                                            severity="secondary" size="small" tooltip="Tomar signos vitales"
+                                            tooltipOptions={{position: 'left'}}/>
+                                    <Button icon="pi pi-angle-right" text raised rounded aria-label="Pasar a consultorio" severity="primary"
+                                            size="small" tooltip="Pasar a consultorio" tooltipOptions={{position: 'left'}}
+                                            onClick={() => handleGoToConsult(rowData?._id)}
+                                    />
+                                    <Button icon="pi pi-pencil" text raised aria-label="Editar" rounded severity="warning" size="small"
+                                            tooltip="Editar" tooltipOptions={{position: 'left'}}/>
+                                    <Button icon="pi pi-times" text raised aria-label="Cancelar" rounded severity="danger" size="small"
+                                            tooltip="Cancelar" tooltipOptions={{position: 'left'}}
+                                            onClick={() => handleCancelConsult(rowData?._id)}
+                                    />
+                                </>
+                            )
+                        }
+
+                        {
+                            rowData?._status === CONSULT_STATUS.CANCELED && (
+                                <Button icon="pi pi-check" text raised aria-label="Restablecer" rounded severity="primary" size="small"
+                                        tooltip="Restablecer" tooltipOptions={{position: 'left'}}
+                                        onClick={() => handleCancelConsult(rowData?._id)}
+                                />
+                            )
+                        }
+                    </div>
+                )
+            }}></Column>
         </DataTable>
     )
 }
