@@ -8,7 +8,7 @@ import {Button} from "primereact/button";
 import {Tag} from "primereact/tag";
 import {format, parseISO} from "date-fns";
 import {OverlayPanel} from "primereact/overlaypanel";
-import {useRef} from "react";
+import {useRef, useMemo} from "react";
 import P12Regular from "@/components/ui/P12Regular.jsx";
 import {RadioButton} from "primereact/radiobutton";
 import {Calendar} from "primereact/calendar";
@@ -27,7 +27,8 @@ const statusOptions = [
 
 const TableWaitingRoom = ({
                               data, sortOptionSelected, sortOptions, handleSort, filters,
-                              handleFilter, handleGoToConsult, handleCancelConsult
+                              handleFilter, handleGoToConsult, handleCancelConsult,
+                              handleContinueConsult, handleEditConsult
                           }) => {
     const overlayPanel = useRef(null);
 
@@ -44,12 +45,13 @@ const TableWaitingRoom = ({
                 <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px',}}>
                     <span style={{
                         color: "var(--primary-color)",
-                        fontSize: '28px',
+                        fontSize: '24px',
                         backgroundColor: 'var(--highlight-bg)',
                         borderRadius: '100%',
-                        padding: '8px'
+                        display: 'flex', justifyContent: 'center', alignItems: 'center',
+                        height: '48px', width: '48px'
                     }}>{data?.length}</span>
-                    <P14SemiBold sx={{margin: 0}}>registros</P14SemiBold>
+                    <P14SemiBold sx={{margin: 0,}}>registros</P14SemiBold>
                 </div>
                 <Divider layout="vertical"/>
                 <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', width: '60%'}}>
@@ -181,8 +183,17 @@ const TableWaitingRoom = ({
             )
     }
 
+    const emptyMessage = () => 
+        <>
+        <P12SemiBold sx={{margin: 8, textAlign: 'center'}}>No hay registros</P12SemiBold>
+        <P12Regular sx={{margin: 0, textAlign: 'center'}}>Puede que no haya registros debido a los filtros aplicados</P12Regular>
+        </>
+    
+
     return (
-        <DataTable value={data} tableStyle={style.table} header={header} size='small'>
+        <DataTable value={data} tableStyle={style.table} header={header} size='small' emptyMessage={emptyMessage}
+            paginator rows={10}
+        >
             {/*<Column field="_id" header="ID"></Column>*/}
             <Column field="reason" header="Motivo/obs." body={(rowData) => {
                 return (<div>
@@ -238,7 +249,7 @@ const TableWaitingRoom = ({
                                             onClick={() => handleGoToConsult(rowData?._id)}
                                     />
                                     <Button icon="pi pi-pencil" text raised aria-label="Editar" rounded severity="warning" size="small"
-                                            tooltip="Editar" tooltipOptions={{position: 'left'}}/>
+                                            tooltip="Editar" tooltipOptions={{position: 'left'}} onClick={() => handleEditConsult(rowData)} />
                                     <Button icon="pi pi-times" text raised aria-label="Cancelar" rounded severity="danger" size="small"
                                             tooltip="Cancelar" tooltipOptions={{position: 'left'}}
                                             onClick={() => handleCancelConsult(rowData?._id)}
@@ -251,7 +262,7 @@ const TableWaitingRoom = ({
                             rowData?._status === CONSULT_STATUS.CANCELED && (
                                 <Button icon="pi pi-check" text raised aria-label="Restablecer" rounded severity="primary" size="small"
                                         tooltip="Restablecer" tooltipOptions={{position: 'left'}}
-                                        onClick={() => handleCancelConsult(rowData?._id)}
+                                        onClick={() => handleContinueConsult(rowData?._id)}
                                 />
                             )
                         }

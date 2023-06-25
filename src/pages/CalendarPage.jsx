@@ -8,6 +8,7 @@ import {es} from 'date-fns/locale'
 import DialogAppointmentComponent from "@/components/domain/calendar/DialogAppointmentComponent.jsx";
 import RefetchAbsoluteButton from "@/components/ui/RefetchAbsoluteButton.jsx";
 import PatientsService from "@/services/PatientsService.js";
+import NewConsultContainer from "@/components/domain/waitingRoom/NewConsultContainer.jsx";
 
 const locales = {
     'es-ES': es

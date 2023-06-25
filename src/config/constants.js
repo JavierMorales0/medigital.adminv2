@@ -39,3 +39,5 @@ export const PLATFORMS = {
     FACEBOOK: 'FACEBOOK',
     NATIVE: 'NATIVE',
 }
+
+export const NOTIFICATION_DURATION = 3000;

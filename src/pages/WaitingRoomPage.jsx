@@ -6,7 +6,6 @@ const WaitingRoomPage = () => {
 
     return (
         <Page title='Sala de espera'>
-            <NewConsultContainer/>
             <WaitingRoomContainer/>
         </Page>
     )

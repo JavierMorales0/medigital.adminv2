@@ -9,12 +9,10 @@ import AppointmentAllInfoDetailsComponent from "@/components/domain/calendar/App
 import NoDetailsComponent from "@/components/domain/calendar/NoDetailsComponent.jsx";
 import {useMemo} from "react";
 import {useTemporalConsultState} from "@/hooks/TemporalConsultState.js";
-import {useNavigate} from "react-router-dom";
 
 const DialogAppointmentComponent = ({visible, handleHide, appointment}) => {
     const {dataAllInfoSpecificPatient: data, isLoadingAllInfoSpecificPatient: isLoading} = PatientsService()
     const temporalConsultState = useTemporalConsultState();
-    const navigate = useNavigate()
     const header = () => {
         return (<P14SemiBold>Detalles de cita</P14SemiBold>)
     }
@@ -32,7 +30,6 @@ const DialogAppointmentComponent = ({visible, handleHide, appointment}) => {
         }
         temporalConsultState.fillDataWithPrevAppointment(consult);
         handleHide()
-        navigate('/sala-de-espera')
     }
     return (
         <Dialog visible={visible} onHide={handleHide} style={style.dialog} position='bottom-right' header={header}

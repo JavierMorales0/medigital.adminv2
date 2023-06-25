@@ -10,14 +10,18 @@ import {useHookstate} from "@hookstate/core";
 import PatientsService from "@/services/PatientsService.js";
 import P12SemiBold from "@/components/ui/P12SemiBold.jsx";
 import {Button} from "primereact/button";
-import P16Bold from "@/components/ui/P16Bold.jsx";
 import P14Regular from "@/components/ui/P14Regular.jsx";
 import ConsultsService from "@/services/ConsultsService.js";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useUIState} from "@/hooks/UIState";
 
 
 const NewConsultContainer = () => {
     const temporalConsult = useTemporalConsultState()
-    const { create } = ConsultsService()
+    const {pathname} = useLocation()
+    const navigate = useNavigate()
+    const ui = useUIState()
+    const {create, update} = ConsultsService()
     const {dataDoctors} = DoctorsService()
     const {dataPatients} = PatientsService()
     const suggestionsDoctor = useHookstate([])
@@ -29,22 +33,35 @@ const NewConsultContainer = () => {
         }
     }, [])
 
-    const handleCreate = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         const validation = temporalConsult?.validateCreateObjectForServer()
-        if(!validation.status){
-            console.log('validation', validation)
+        if (!validation.status) {
+            ui?.addNotification(validation?.msg, 'error');
             return
         }
         const data = temporalConsult?.createObjectForServer()
-        create.mutate(data)
+        if(temporalConsult?.isEditing){
+            update.mutate(data)
+        } else {
+            create.mutate(data)
+            if (pathname !== '/sala-de-espera') {
+                navigate('/sala-de-espera')
+            }
+        }
+
     }
+
+    const handleUpdate = (e) => {
+
+    }
+
     const handleClickExit = () => {
         temporalConsult?.clear()
     }
 
     const header = () => {
-        return (<P14SemiBold>Nueva consulta</P14SemiBold>)
+        return (<P14SemiBold>{temporalConsult?.isEditing ? 'Edición de' : 'Nueva'} consulta</P14SemiBold>)
     }
 
     const handleCompleteDoctor = () => {
@@ -95,18 +112,19 @@ const NewConsultContainer = () => {
     return (
         <Dialog visible={!temporalConsult?.isEmpty()} onHide={handleClickExit} position='bottom' draggable={false}
                 resizable={false} style={style.dialog} header={header}>
-            <form style={style.container} onSubmit={handleCreate}>
+            <form style={style.container} onSubmit={handleSubmit}>
                 {/*<ButtonCancelEditModeWaitingRoom handleClickExit={handleClickExit}/>*/}
                 {/*<div style={style.header}>*/}
                 {/*    <span style={style.header.title}>{format(parse(temporalConsult?.date, 'yyyy-MM-dd', new Date()), 'PP')}</span>*/}
                 {/*    /!*<p style={style.header.subtitle}>Motivo: {temporalConsult?.reason || '-- NO DEFINIDO --'}</p>*!/*/}
                 {/*</div>*/}
                 {
-                    temporalConsult?.isBlockPrevAppointment && (
-                       <div style={style.prevAppointment}>
-                           <P12SemiBold sx={{margin:0}}>La consulta se crear&aacute; con cita previa</P12SemiBold>
-                           <P14Regular sx={{margin:0}}>{temporalConsult?.prevAppointment}</P14Regular>
-                       </div> )
+                    temporalConsult?.prevAppointment && temporalConsult?.isBlockPrevAppointment && (
+                        <div style={style.prevAppointment}>
+                            <P12SemiBold sx={{margin: 0}}>La consulta
+                                se {temporalConsult?.isEditing ? 'creo' : 'creará'} con cita previa</P12SemiBold>
+                            <P14Regular sx={{margin: 0}}>{temporalConsult?.prevAppointment || ""}</P14Regular>
+                        </div>)
                 }
                 <div style={style.content}>
                     {
@@ -114,7 +132,7 @@ const NewConsultContainer = () => {
                             <div style={style.content.row}>
                                 <div className="form-group" style={{flex: 1}}>
                                     <span className="p-float-label">
-                                        <InputText value={temporalConsult?.prevAppointment} style={style.input}
+                                        <InputText value={temporalConsult?.prevAppointment || ""} style={style.input}
                                                    onChange={(e) => temporalConsult?.setPrevAppointment(e.target.value)}
                                         /><label htmlFor="patient">Cita previa</label>
                                     </span>
@@ -126,7 +144,8 @@ const NewConsultContainer = () => {
                     <div style={style.content.row}>
                         <div className="form-group" style={{flex: 1}}>
                             <span className="p-float-label">
-                                <InputTextarea id="reason" value={temporalConsult?.reason} style={style.input} rows={2}
+                                <InputTextarea id="reason" value={temporalConsult?.reason || ""} style={style.input}
+                                               rows={2}
                                                autoResize maxLength={80} required
                                                onChange={(e) => temporalConsult?.setReason(e.target.value.toUpperCase())}/>
                                 <label htmlFor="reason">Motivo *</label>
@@ -147,7 +166,7 @@ const NewConsultContainer = () => {
                             <span className="p-float-label">
                                 <AutoCompleteInput
                                     completeMethod={handleCompletePatient}
-                                    value={temporalConsult?.patient}
+                                    value={temporalConsult?.patient || ""}
                                     suggestions={JSON.parse(JSON.stringify(suggestionsPatient.value))}
                                     field='first_name'
                                     required
@@ -162,7 +181,7 @@ const NewConsultContainer = () => {
                             <span className="p-float-label">
                                 <AutoCompleteInput
                                     completeMethod={handleCompleteDoctor}
-                                    value={temporalConsult?.doctor}
+                                    value={temporalConsult?.doctor || ""}
                                     suggestions={JSON.parse(JSON.stringify(suggestionsDoctor.value))}
                                     field='employee.last_name'
                                     required
@@ -174,7 +193,8 @@ const NewConsultContainer = () => {
                             <P12SemiBold>{doctorName}</P12SemiBold>
                         </div>
                     </div>
-                    <Button label='Crear' style={{width: '50%', margin: '0 auto'}} type={"submit"}/>
+                    <Button label={temporalConsult?.isEditing ? 'Editar' : 'Crear'}
+                            style={{width: '50%', margin: '0 auto'}} type={"submit"}/>
                 </div>
             </form>
         </Dialog>
@@ -212,7 +232,7 @@ const style = {
             lineHeight: '24px',
             margin: 0
         }
-    },prevAppointment:{
+    }, prevAppointment: {
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'var(--highlight-bg)',

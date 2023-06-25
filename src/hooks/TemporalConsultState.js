@@ -2,6 +2,7 @@ import {hookstate, useHookstate} from "@hookstate/core";
 import { format} from "date-fns";
 
 export const temporalConsultState = hookstate({
+    _id: null,
     date: null,
     startHour: null,
     endHour: null,
@@ -16,12 +17,15 @@ export const temporalConsultState = hookstate({
     prevAppointment: '',
     status: null,
     isBlockPrevAppointment: null,
+    isEditing: null,
 });
 
 export const useTemporalConsultState = () => {
     const state = useHookstate(temporalConsultState);
 
     return {
+        _id: state._id.value,
+        setID: (_id) => state._id.set(_id),
         date: state.date.value,
         setDate: (date) => state.date.set(date),
         startHour: state.startHour.value,
@@ -51,11 +55,13 @@ export const useTemporalConsultState = () => {
         status: state.status.value,
         setStatus: (status) => state.status.set(status),
         isBlockPrevAppointment: state.isBlockPrevAppointment.value,
+        isEditing: state.isEditing.value,
         setIsBlockPrevAppointment: (block) => state.isBlockPrevAppointment.set(block),
         init: ()=>{
             state.date.set(format(new Date(), 'yyyy-MM-dd'));
         },
         clear: () => {
+            state._id.set(null);
             state.date.set(null);
             state.startHour.set(null);
             state.endHour.set(null);
@@ -70,6 +76,7 @@ export const useTemporalConsultState = () => {
             state.prevAppointment.set('');
             state.status.set(null);
             state.isBlockPrevAppointment.set(null);
+            state.isEditing.set(null);
         },
         isEmpty: () => {
             return Object.values(state.get()).every((value) => value === null || value === '' || value.length === 0);
@@ -85,6 +92,7 @@ export const useTemporalConsultState = () => {
         createObjectForServer: () => {
             const data = state.get();
             return {
+                _id: data._id || null,
                 date: data.date,
                 patient: data.patient,
                 reason: data.reason,
@@ -124,6 +132,24 @@ export const useTemporalConsultState = () => {
                 status: true,
             }
 
+        },
+        loadExistingConsult: (consult) => {
+            state._id.set(consult?._id);
+            state.date.set(consult?.date.slice(0, 10));
+            state.startHour.set(consult?.startHour);
+            state.endHour.set(consult?.endHour);
+            state.patient.set(consult?.patient?._id);
+            state.doctor.set(consult?.doctor?._id);
+            state.reason.set(consult?.reason);
+            state.physicalFindings.set(consult?.physicalFindings);
+            state.medicalRecord.set(consult?.medicalRecord);
+            state.diagnostic.set(consult?.diagnostic);
+            state.prescriptions.set(consult?.prescriptions);
+            state.observations.set(consult?.observations);
+            state.prevAppointment.set(consult?.prev_appointment?._id || '');
+            state.status.set(consult?.status);
+            state.isBlockPrevAppointment.set(true);
+            state.isEditing.set(true);
         }
     };
 };
