@@ -1,4 +1,5 @@
-export const API_URL = 'http://localhost:3001/api';
+// export const API_URL = 'http://localhost:3001/api';
+export const API_URL = 'https://medigital-api-4afa6fb47624.herokuapp.com/api';
 export const APP_TITLE = 'MEDIGITAL.admin';
 
 export const HTTP_TYPES = {

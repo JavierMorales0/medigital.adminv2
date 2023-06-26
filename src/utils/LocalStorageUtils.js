@@ -49,3 +49,16 @@ const encrypt = (data) => {
 const decrypt = (data) => {
     return JSON.parse(CryptoJS.AES.decrypt(data, CRYPTO_SECRET_KEY).toString(CryptoJS.enc.Utf8));
 }
+
+export const saveConsultInProgress = (consult) => {
+    localStorage.setItem('consultInProgress', encrypt(consult));
+}
+
+export const getConsultInProgress = () => {
+    const consultEncrypted = localStorage.getItem('consultInProgress');
+    return consultEncrypted ? decrypt(consultEncrypted) : null;
+}
+
+export const removeConsultInProgress = () => {
+    localStorage.removeItem('consultInProgress');
+}
